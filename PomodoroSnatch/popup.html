@@ -7,16 +7,34 @@
 
   <body class="popupBody">
     <div class="popupHeader">
-      <img class="logo" src="images/logo128.png">
-      <div> Time Snatch <img id="cogButton" src="images/cog.png"> </div>
+      <!-- <img class="logo" src="images/logo128.png"> -->
+      <div> Pomodoro Snatch
+        <!-- <img id="cogButton" src="images/cog.png">  -->
+      </div>
     </div>
-    <div id="popupList">
-      <table>
-      </table>
+
+    <div class="container">
+      <div class="circle"> <svg width="200" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(110,110)">
+          <circle r="100" class="e-c-base"/>
+          <g transform="rotate(-90)">
+            <circle r="100" class="e-c-progress"/>
+            <g id="e-pointer">
+              <circle cx="100" cy="0" r="8" class="e-c-pointer"/>
+            </g>
+          </g>
+        </g>
+        </svg> </div>
+      <div class="controlls">
+        <div class="display-remain-time">00:30</div>
+        <button class="startPomodoro" id="controllButton"></button>
+      </div>
     </div>
-    <button class="popupButton optionsButton">
-      Block a website
-    </button>
+
+
+    <div class="footerMenu">
+
+    </div>
 
   </body>
 </html>
