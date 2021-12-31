@@ -82,6 +82,7 @@ td{
 
 .popupBody{
   width: 250px;
+  height: 347px;
   font-size: 15px;
   border-right: 1px solid white;
   border-bottom: 1px solid white;
@@ -158,7 +159,19 @@ button[data-setter] {
   border-left: 22px solid #ff3b30;
 }
 
-.voidPomodoro::after {
+
+.resumePomodoro::before {
+  display: block;
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: -9px;
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-left: 22px solid #ff3b30;
+}
+
+.pausePomodoro::after {
   content: "";
   position: absolute;
   top: 15px;
@@ -171,8 +184,36 @@ button[data-setter] {
   background: #ff3b30;
 }
 
+.greeny::before{
+  border-left: 22px solid #1abc9c!important;
+}
+
+.greeny::after{
+  border: 5px solid #1abc9c!important;
+  background: #1abc9c!important;
+}
+
 .footerMenu{
-  height: 40px;
+  height: 55px;
+}
+
+.midSection{
+  /* height: 20px; */
+  text-align: center;
+}
+
+#cogButton{
+  height:40px;
+  width: 40px;
+  position: absolute;
+  left: 205px;
+  top: 300px;
+}
+
+#completed{
+  margin-top:20px;
+  font-weight: 100;
+  font-size: 20px;
 }
 
 .e-c-base {
@@ -198,6 +239,73 @@ button[data-setter] {
   text-align: center;
 }
 
+.btn-close {
+  border-radius: 50%;
+  padding: 0.5em;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #8e8e93;
+  color: #8e8e93;
+  position: absolute;
+  background-color: transparent;
+  margin-left: 200px;
+  margin-top: 10px;
+  z-index: 1000;
+}
+
+.btn-close::before {
+  content: " ";
+  position: absolute;
+  display: block;
+  background-color: #8e8e93;
+  width: 1px;
+  left: 8px;
+  top: 3px;
+  bottom: 3px;
+  transform: rotate(45deg);
+}
+
+.btn-close::after {
+  content: " ";
+  position: absolute;
+  display: block;
+  background-color: #8e8e93;
+  height: 1px;
+  top:8px;
+  left: 3px;
+  right: 3px;
+  transform: rotate(45deg);
+}
+
+#task-select {
+  margin-top: 12px;
+  margin-left: 10px;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  width: 182px;
+  padding: 5px 15px 5px 5px;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: inherit;
+  line-height: inherit;
+  font-size: 18px;
+  color:  #757577;
+  /* text-align-last: center; */
+  background: url(../images/p.svg) no-repeat right;
+  background-size: 13px 13px;
+  font-weight: 300;
+}
+
+
+#task-select:active, #task-select:focus {
+  outline: 0;
+  border: none;
+}
+
+/* #task-select::-ms-expand {
+  display: none;
+} */
 
 /* #f98f86 the pale red */
  /*TODO ADD on start */

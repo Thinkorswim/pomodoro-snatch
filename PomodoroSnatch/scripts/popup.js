@@ -3,17 +3,37 @@ $(function(){
   $("#controllButton").click(function(){
 
     if($("#controllButton").hasClass("startPomodoro")){
-      $("#controllButton").removeClass("startPomodoro").addClass( "voidPomodoro" );
-    }else{
-      // TODO reset everything
-      $("#controllButton").removeClass("voidPomodoro").addClass( "startPomodoro" );
+
+      const task = $( "#task-select" ).val();
+
+      $("#controllButton").removeClass("startPomodoro").addClass( "pausePomodoro" );
+      $(".btn-close").toggle()
+      chrome.runtime.sendMessage({
+        type: "startPomodoro",
+        task: task
+      }); 
+    }else if ($("#controllButton").hasClass("pausePomodoro")) {
+      $("#controllButton").removeClass("pausePomodoro").addClass( "resumePomodoro" );
+      chrome.runtime.sendMessage({
+        type: "pausePomodoro",
+      }); 
+    }else if ($("#controllButton").hasClass("resumePomodoro")) {
+      $("#controllButton").removeClass("resumePomodoro").addClass( "pausePomodoro" );
+      chrome.runtime.sendMessage({
+        type: "pausePomodoro",
+      }); 
     }
 
+  });
+
+
+  $(".btn-close").click(function(){
     chrome.runtime.sendMessage({
-      type: "startPomodoro",
+      type: "stopPomodoro",
     });
   });
 
+  $(".btn-close").toggle()
   chrome.runtime.sendMessage({
     type: "getPomodoroTime",
   });
@@ -32,11 +52,38 @@ $(function(){
       wholeTime = request.timeTotal;
       displayTimeLeft(request.time);
 
-      if(request.time != request.timeTotal){
-        $("#controllButton").removeClass("startPomodoro").addClass( "voidPomodoro" );
+      if (request.stage == "break"){
+        $("#controllButton").addClass("greeny");
+        $(".display-remain-time").css("color", "#1abc9c");
+        $(".popup-title").css("color", "#1abc9c");
+        $(".e-c-pointer").css("stroke", "#1abc9c");
+        $(".e-c-progress").css("stroke", "#1abc9c");
       }
-    }else if(request.type == "endPomodoro"){
-      $("#controllButton").removeClass("voidPomodoro").addClass( "startPomodoro" );
+      
+      if (request.isPaused) {
+        $("#controllButton").removeClass("startPomodoro").addClass( "resumePomodoro" );
+      } else {
+        if(request.time != request.timeTotal || request.stage == "break"){
+          $("#controllButton").removeClass("startPomodoro").addClass( "pausePomodoro" );
+        }
+      }
+
+
+    }else if(request.type == "breakStage"){
+      $("#controllButton").addClass("greeny");
+      $(".display-remain-time").css("color", "#1abc9c");
+      $(".popup-title").css("color", "#1abc9c");
+      $(".e-c-pointer").css("stroke", "#1abc9c");
+      $(".e-c-progress").css("stroke", "#1abc9c");
+    }
+    else if(request.type == "endPomodoro"){
+      $("#controllButton").removeClass("pausePomodoro").addClass( "startPomodoro" );
+      $(".display-remain-time").css("color", "#ff3b30");
+      $(".popup-title").css("color", "#ff3b30");
+      $(".e-c-pointer").css("stroke", "#ff3b30");
+      $(".e-c-progress").css("stroke", "#ff3b30");
+      $("#controllButton").removeClass("greeny");
+      $(".btn-close").toggle();
     }
   });
 

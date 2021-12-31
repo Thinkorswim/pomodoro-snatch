@@ -5,7 +5,7 @@ chrome.runtime.onInstalled.addListener(function (object) {
     }
 });
 
-chrome.browserAction.setBadgeBackgroundColor({ color: "#3498db"});
+chrome.browserAction.setBadgeBackgroundColor({ color: "#ff3b30"});
 
 concentrationTime = 3;
 breakTime = 3;
@@ -14,6 +14,8 @@ pomodoroInterval = null;
 pomodoroCount = 0;
 pomodoroCounter = concentrationTime;
 pomodoroStage = "concentration";
+pomodoroTask = null;
+isPaused = false;
 
 chrome.storage.sync.get('pomodoroCount', function(data){
   pomodoroCount = data.pomodoroCount;
@@ -22,9 +24,14 @@ chrome.storage.sync.get('pomodoroCount', function(data){
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.type == "startPomodoro"){
     startPomodoro();
+    pomodoroTask = request.task;
     setBadge(getMinutesAndSeconds(pomodoroCounter));
   }else if(request.type == "getPomodoroTime"){
-      sendPomodoroTime();
+    sendPomodoroTime();
+  }else if(request.type == "pausePomodoro"){
+    pausePomodoro();
+  }else if(request.type == "stopPomodoro"){
+    stopPomodoro();
   }
 });
 
@@ -41,7 +48,9 @@ function sendPomodoroTime(){
   chrome.runtime.sendMessage({
     type: "updateTime",
     time: pomodoroCounter,
-    timeTotal: timeTotal
+    timeTotal: timeTotal,
+    stage: pomodoroStage,
+    isPaused: isPaused
   });
 }
 
@@ -50,49 +59,56 @@ function startPomodoro(){
   pomodoroInterval = setInterval( updateTime, 1000 );
 }
 
+function pausePomodoro(){
+  isPaused = !isPaused;
+}
+
 function stopPomodoro(){
   clearInterval(pomodoroInterval);
   pomodoroInterval = null;
   setBadge('');
-  chrome.browserAction.setBadgeBackgroundColor({ color: "#3498db"});
+  chrome.browserAction.setBadgeBackgroundColor({ color: "#ff3b30"});
   pomodoroStage = "concentration";
   pomodoroCounter = concentrationTime;
   chrome.runtime.sendMessage({
     type: "endPomodoro"
   });
+  sendPomodoroTime();
 }
 
 function updateTime(){
-    pomodoroCounter -= 1;
-    setBadge(getMinutesAndSeconds(pomodoroCounter));
+    if (!isPaused) {
+      pomodoroCounter -= 1;
+    
+      setBadge(getMinutesAndSeconds(pomodoroCounter));
 
-    if(pomodoroCounter == 300){
-      createNotification("K");
-    }else if(pomodoroCounter == 60){
-      createNotification("OK");
-    }else if(pomodoroCounter == 10){
-      createNotification("Okay");
-    }
+      if(pomodoroCounter <= 0){
+        if(pomodoroStage == "concentration"){
+          createNotification("Take a break ! (Pomodoro Snatch)", "The time for concentration is over! Its vital to respeact the break and stop all activity. ");
 
-    if(pomodoroCounter <= 0){
-      if(pomodoroStage == "concentration"){
-        createNotification("Take a break ! (Pomodoro Snatch)", "The time for concentration is over! Its vital to respeact the break and stop all activity. ");
+          // TODO check the count I guesS?
+          pomodoroCounter = breakTime;
+          pomodoroStage = "break";
 
-        // TODO check the count I guesS?
-        pomodoroCounter = breakTime;
-        pomodoroStage = "break";
+          chrome.browserAction.setBadgeBackgroundColor({ color: "#1abc9c"});
+          setBadge(getMinutesAndSeconds(pomodoroCounter));
 
-        chrome.browserAction.setBadgeBackgroundColor({ color: "#1abc9c"});
-        setBadge(getMinutesAndSeconds(pomodoroCounter));
-      }else if(pomodoroStage == "break"){
-        // TODO Notify
-        stopPomodoro();
-        // TODO Update total count pomodoros and stuff :|
+          chrome.runtime.sendMessage({
+            type: "breakStage"
+          });
 
+          sendPomodoroTime();
+        }else if(pomodoroStage == "break"){
+          // TODO Notify
+          stopPomodoro();
+          
+
+
+        }
+      } else {
+        sendPomodoroTime();
       }
     }
-
-    sendPomodoroTime();
 }
 
 function setBadge(text){

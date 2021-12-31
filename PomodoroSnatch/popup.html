@@ -1,4 +1,4 @@
-<html>
+<html style="height:347px">
   <head>
     <script src="scripts/jquery-3.2.1.min.js"></script>
     <script src="scripts/popup.js"></script>
@@ -8,11 +8,11 @@
   <body class="popupBody">
     <div class="popupHeader">
       <!-- <img class="logo" src="images/logo128.png"> -->
-      <div> Pomodoro Snatch
+      <div class="popup-title"> Pomodoro Snatch
         <!-- <img id="cogButton" src="images/cog.png">  -->
       </div>
     </div>
-
+    <button class='btn-close'></button>
     <div class="container">
       <div class="circle"> <svg width="200" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
         <g transform="translate(110,110)">
@@ -31,9 +31,18 @@
       </div>
     </div>
 
+    <div class="midSection">
+      <div id="completed">Today: <span style="color:#ff3b30;">1/5</span></div>
+    </div>
 
     <div class="footerMenu">
-
+      <select id="task-select">
+        <option value="Other">Other</option>
+        <option value="PhD">PhD</option>
+        <option value="Personal Development">Personal Development</option>
+        <option value="Influ.ai">Influ.ai</option>
+      </select>
+      <div id="cogButton"><img style="width:40px;height:40px" src="images/cog.svg"></div>
     </div>
 
   </body>
